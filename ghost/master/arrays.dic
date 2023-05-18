@@ -1,0 +1,103 @@
+//assign to a variable like so
+/*
+_array = ANY(exampleArray)
+"display with %(_array[0])"
+call with _array[0] or exampleArray[0][0] (provided you know which element of the array it is)
+
+*/
+
+encounters : array {
+	//name,health,magicPoints,maxDamage,minDamage,exp,description,interval
+	"Blue Plastic Cup With Small Amount Of Pink Lemonade,15,0,7,3,5,Glass neither half nor half empty but a secret third thing: almost gone.,1"
+	"Menacing Dishes,30,0,9,3,36,A menacing aura is emanating from these unwashed dishes. Besting them fills you with immesurable relief and the knowledge that no mold will grow in your kitchen.,2"
+	"Country Time Pink Lemonade,30,10,3,1,10,No artificial sweeteners or flavors! While it may be tough to beat; doing so leaves you vaguely disappointed.,3"
+	"Dev Monolouging 404 not found (smoky),15,20,12,3,10,It emanates a harsh blue light - one which is hard to look at. A strange artifact.,4"
+	"CD Stack,15,10,5,1,3,Supposedly obsolete.,5"
+	"Cool Guitar,30,10,12,6,21,Makes a pretty sound when hit. Scares all cats in a 3 foot radius.,6"
+	"3DS (Purple),15,10,6,1,5,Hard to absorb. Kind of pretty near a light source.,7"
+	"This Thing I Guess,15,0,3,1,5,Very cheerful... for something in The Dungeon.,8"
+	"Real Crystal Butter Dish,15,0,9,6,15,Fragile - but packs quite the punch. The actual dish half is just plain ceramic though.,9"
+	"Xbox Controller (With Aged Bite Marks),15,10,9,6,13,Some kind of creature tried to eat this before you. They must not have been overly successful.,10"
+	"Contadina Crushed Tomatos,34,0,9,6,40,They travel in packs. Melts your slime slightly on absorbtion.,11"
+	"Miracle Whip,15,0,9,3,5,Not Mayonnaise. Goes well with Tuna Fish.,12"
+	"Inn Keeper Tomato *Tomate* Soups,60,0,9,3,60,They travel in pairs; exuding a menacing aura. Good with Noodles.,13"
+	"3DS (Old),18,10,6,1,5,Hard to absorb. Some kind of attatchment on the bottom is making it heavier.,14"
+	"Tiny Strawbebbies,20,10,4,2,10,Planted very close together. They'll grow in time!,15"
+	"Big Sage,15,10,4,2,5,Growing and Growing and Growing. Maybe it's actually two plants together.,16"
+	"It's a Bird! It's a Plane! It's Probably Oregano!,15,10,4,2,5,Mysterious Plant. It smells familiar - somehow.,17"
+	"Pebsi,5,0,6,3,5,Some property of this strange liquid makes your slime all bubbly. Kind of Weird.,18"
+	"Acetone,13,0,12,6,15,You tried absorbing this; Once.,19"
+	"Lawn Mower,30,20,9,9,40,It fills the air with the smell of fresh grass - and the environment with a worrying vibrating quality. Try not to get underfoot.,20"
+	"Ball.,5,20,1,1,0,Emits a pleasant sound when kicked.,21"
+
+}
+
+encounterMagic : array {
+	//name,cost,damage
+	"Static Shock,2,5"
+	"Freeze,4,9"
+	"Singular Lightning,9,12"
+	"Fuzzy Arc,15,20"
+}
+
+encounterPotions : array {
+	//name,effectNumber
+	//even - heal, odd - healMagic
+	"Health Drink,5"
+	"Magic Restore,5"
+}
+
+slimeMagic : array {
+	//name,cost,damage,description
+	case slimeClass[0] {
+		when "Humble Slime" {
+			"Static Shock,2,5,We're not sure how you even managed to generate static - being a slime and all."
+			"Freeze,4,9,Freeze your enemies right in their Tracks!\nReally though it just makes them cold."
+		}
+		when "Fuzzy Slime" {
+			"Freeze,4,9,Freeze your enemies right in their Tracks!\nReally though it just makes them cold."
+			"Singular Lightning,9,12,One Shining Ray of Lightning arcs towards the enemy.\nCool."
+			
+			"Fuzzy Arc,15,20,Release Energy at the enemy!\nEveryone else feels a little Fuzzy - but your mind Clears momentarily."
+			"Fuzzy Blast,42,60,Release Energy into the surrounding area!\nEverybody else starts to feel sick - but your mind Clears and you can start to Focus for once."
+		}
+		when "Wizard Slime" {
+			"Static Shock,2,5,We're not sure how you even managed to generate static - being a slime and all."
+			"Freeze,4,9,Freeze your enemies right in their Tracks!\nReally though it just makes them cold."
+			"Singular Lightning,9,12,One Shining Ray of Lightning arcs towards the enemy.\nCool."
+			"Fuzzy Arc,15,20,Release Energy at the enemy!\nYou all feel a little Fuzzy."
+			"Fuzzy Blast,51,60,Release Energy into the surrounding area!\nYou all start to feel sick."
+		}
+		others {}
+	}
+}
+
+charClass : array {
+	//name,health,magicPoints,description
+	"Humble Slime,20,10,A Humble Slime. Slight magic accrued from many days on the Slime Farmland."
+	"Fuzzy Slime,15,20,Only fuzzy in that this slime has trouble Focusing. And everything around also has trouble Focusing."
+	"Attack Slime,25,0,Hardened from many years Down Here. Resilient - yet can't master the art of magic."
+	"Wizard Slime,10,30,Must have gotten Lost Down Here. Very fragile."
+}
+
+charWeapon : array {
+	//name,damage,description
+	"Rusty Pitchfork,5,Rusted after many Years down here. Originally from the Slime Farmland. Good thing you can't get tetanus..."
+	"Melted Pole,10,Makes you feel Fuzzy. Metal - something Hot or Powerful must have Melted it."
+	"Sticking Metal,5,These pieces of metal are Stuck Together.\nGood for throwing."
+	"Serrated Knife,7,Makes a horrible Screeching when used on metal.\nIt must not like Metal very much..."
+	"Frying Pan,12,Made of Metal. Heavy - but Flattens enemies easily."
+	"Dog,20,Your eternal friendly Companion.\nAbsorbs things Weirdly - but you love it anyways."
+	"Spoon,3,Helps to break down Liquids for Absorbtion.\nNot really faster."
+	"Can Opener,7,If you throw it hard enough it can open a Can.\nIs that why it's a Can Opener?"
+}
+
+charPotion : array {
+	//name,effectNumber,potionClass,description
+	"Health Drink,5,heal,A glowing green liquid. It's probably fine."
+	"Magic Restore,5,healMagic,Tastes like Batteries. What are Batteries; anyways?"
+	"Big Health,15,heal,A glowing red liquid. Slightly worriesome."
+	"Epic Health,50,heal,A glowing white goop. Makes you feel kind of... fuzzy."
+	"Big Magic,15,healMagic,Energizer for your soul."
+	"Epic Magic,50,healMagic,So strong you're not even sure you want it again.\nMagic is Oozing off of you."
+}

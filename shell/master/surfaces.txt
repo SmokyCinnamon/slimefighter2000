@@ -1,0 +1,73 @@
+version,1
+
+surface0
+{
+	animation0.interval,always
+	animation0.pattern0,overlay,100,300,0
+	animation0.pattern1,overlay,0,375,0
+	animation0.pattern2,overlay,100,400,0
+	animation0.pattern3,overlay,0,375,0
+
+	animation1.interval,never
+	animation1.pattern0,overlay,1,0,0
+
+	animation2.interval,never
+	animation2.pattern0,overlay,2,0,0
+
+	animation3.interval,never
+	animation3.pattern0,overlay,3,0,0
+
+	animation4.interval,never
+	animation4.pattern0,overlay,4,0,0
+
+	animation5.interval,never
+	animation5.pattern0,overlay,5,0,0
+
+	animation6.interval,never
+	animation6.pattern0,overlay,6,0,0
+
+	animation7.interval,never
+	animation7.pattern0,overlay,7,0,0
+
+	animation8.interval,never
+	animation8.pattern0,overlay,8,0,0
+
+	animation9.interval,never
+	animation9.pattern0,overlay,9,0,0
+
+	animation10.interval,never
+	animation10.pattern0,overlay,10,0,0
+
+	animation11.interval,never
+	animation11.pattern0,overlay,11,0,0
+
+	animation12.interval,never
+	animation12.pattern0,overlay,12,0,0
+
+	animation13.interval,never
+	animation13.pattern0,overlay,13,0,0
+
+	animation14.interval,never
+	animation14.pattern0,overlay,14,0,0
+
+	animation15.interval,never
+	animation15.pattern0,overlay,15,0,0
+
+	animation16.interval,never
+	animation16.pattern0,overlay,16,0,0
+
+	animation17.interval,never
+	animation17.pattern0,overlay,17,0,0
+
+	animation18.interval,never
+	animation18.pattern0,overlay,18,0,0
+
+	animation19.interval,never
+	animation19.pattern0,overlay,19,0,0
+
+	animation20.interval,never
+	animation20.pattern0,overlay,20,0,0
+
+	animation21.interval,never
+	animation21.pattern0,overlay,21,0,0
+}

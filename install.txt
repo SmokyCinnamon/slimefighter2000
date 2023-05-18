@@ -1,0 +1,5 @@
+charset,UTF-8
+type,ghost
+
+name,Slime Fighter 2000
+directory,slimefighter2000

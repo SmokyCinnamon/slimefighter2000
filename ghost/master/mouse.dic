@@ -1,0 +1,52 @@
+//не с функции меню, потому что здесь есть возможность добавить другие взаимодействия, так как тыкание, ударение, или вопроси про разные горячие места
+OnMouseDoubleClick
+{
+	if reference5 == 0 //reference 5 - нажатого кнопку. здесь она левая
+	{
+		//reference 3 - нажатого персонажа.
+		//если хочешь взаимодействия двойное нажатие, reference4 - название хитбокса
+		if reference3 == 0
+		{
+			OnSakuraMenu
+		}
+		else
+		{
+			OnKeroMenu
+		}
+	}
+}
+
+OnMouseMove
+{
+	if reference4 != ""
+	{
+		stroke++
+		
+		if stroke % 40 == 0
+		{
+			if reference3 == 0; OnMouseMove.Sakura
+			else; OnMouseMove.Kero
+		}
+	}
+}
+
+OnMouseMove.Sakura
+{
+	if reference4 == "голова"
+	{
+		"\0\s[0]ласки??"
+	}
+}
+
+OnMouseMove.Kero
+{
+	if reference4 == "голова"
+	{
+		"\1\s[10]ласки..."
+	}
+}
+
+OnMouseLeaveAll
+{
+	stroke = 0
+}

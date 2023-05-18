@@ -1,0 +1,17 @@
+charset,UTF-8
+
+name,Slime Fighter 2000
+type,ghost
+
+shiori,yaya.dll
+
+craftman,SmokyCinnamonRoll
+craftmanurl,https://smokycinnamon.github.io/indifferentsorrel
+
+sakura.name,Dungeon!!!!!!!!
+kero.name,xbox controller
+balloon,Tamriel
+
+icon,icon.ico
+
+sstp.allowunspecifiedsend,0

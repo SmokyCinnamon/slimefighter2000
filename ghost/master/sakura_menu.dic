@@ -1,0 +1,219 @@
+OnMouseDoubleClick
+{
+	if reference5 == 0 //reference 5 - нажатого кнопку. здесь она левая
+	{
+		//reference 3 - нажатого персонажа.
+		//если хочешь взаимодействия двойное нажатие, reference4 - название хитбокса
+		if reference3 == 0
+		{
+			OnSakuraMenu
+		}
+	}
+}
+
+OnSakuraMenu : all
+{
+	OnInteger
+	"\0\s[0]\b2\![set,autoscroll,disable]\_q\*"
+	"\n[half]"
+	if encounterRun != 1 {
+		"%*\__q[OnEncounterRate]Change Encounter Rate (%(encounterRate))\__q\n\n"
+		"%*\__q[OnChangeClass]Change Character Class\__q\n"
+		"%*\__q[OnChangeWeapon]Change Weapon\__q\n"
+		"%*\__q[OnInventory]View Inventory\__q\n"
+	}
+	
+	"%*\__q[OnEncounterInfo]Enemy Information\__q\n"
+	if encounterRun; "\n%*\__q[OnEncounter,pause]Exit Pause Menu\__q"
+	else; "\n%*\q[Back To Dungeon, пустой]"
+	"\n\nClass: %(slimeClass[0])\nWeapon: %(slimeWeapon[0])"
+	"\nHP: %(slimeClass[1]) MP: %(slimeClass[2])"
+	"\nLevel: %(slimeLevel)\nEXP: %(slimeExp)/100"
+	"\nNext Encounter: %(encounterMinute)/%(encounterRate)\_q"	
+}
+
+OnChangeClass : all {
+	"\b[2]\_q\![set,autoscroll,disable]\*"
+	_display = ''
+	//"WARNING: This will RESET your progress! Only Proceed if you're certain you want to RESET your PROGRESS!\n\n\n[half]"
+	"%*\__q[OnChangeClass,slimeReset]Reset All Progress (WILL RESET EVERYTHING)\__q\n\n"
+	foreach charClass; _class {
+		_display += "%*\__q[OnChangeClass,%(_class)]%(_class[0])\__q\n(HP: %(_class[1]) MP: %(_class[2]))\n\n[half]"
+	}
+	_display
+	"\n[half]%*\__q[OnSakuraMenu]Return To Pause Menu\__q\n%*\__q[пустой]Back To Dungeon\__q"
+	if reference0 == "slimeReset" {
+		slimeClass = (charClass[0][0],TOINT(charClass[0][1]),TOINT(charClass[0][2]),charClass[0][3])
+		slimeLevel = 0
+		arrayLevel = (0,0)
+		slimeExp = 0
+		invWeapon = IARRAY
+		invWeapon ,= charWeapon[0]
+		slimeWeapon = (charWeapon[0][0],charWeapon[0][1],charWeapon[0][2])
+		invPotions = IARRAY
+		invPotions ,= charPotion[0]
+		invPotions ,= charPotion[0]
+		invPotions ,= charPotion[0]
+		invPotions ,= charPotion[1]
+		
+		"\n\nProgress has been reset.\nClass is temporarily %(slimeClass[0])."
+	}
+	if reference0 != "" && reference0 != "slimeReset" {
+		slimeClass = (reference0,reference1,reference2,reference3)
+		//if TOINT(reference2) == 0; arrayLevel[1] = 0
+		"\n\nClass Changed to %(slimeClass[0])"
+	}
+	"\_q"
+}
+
+OnChangeWeapon : all {
+	"\b[2]\_q\![set,autoscroll,disable]\*"
+	if encounterRun; "%*\__q[OnSlimeTurn]Return to Action Menu\__q\n"
+	else {
+		_display = ''
+		foreach invWeapon; _weapon {
+			_display += "%*\__q[OnChangeWeapon,%(_weapon)]%(_weapon[0])\__q\n"
+		}
+		_display
+		"\n\n[half]%*\__q[OnSakuraMenu]Return To Pause Menu\__q\n%*\__q[пустой]Back To Dungeon\__q"
+	}
+	if reference0 != "" {
+		LOGGING("%(reference)")
+		slimeWeapon = (reference0,reference1,reference2)
+		"\n\nWeapon changed to %(slimeWeapon[0])"
+	}
+	"\n\nClass: %(slimeClass[0])\nWeapon: %(slimeWeapon[0])"
+	"\nHP: %(slimeClass[1]) MP: %(slimeClass[2])"
+	"\nLevel: %(slimeLevel)\nEXP: %(slimeExp)/100"
+	"\_q"
+}
+
+OnInventory : all {
+	"\b[2]\_q\![set,autoscroll,disable]\*"
+	_display = ''
+	_displayTwo = ''
+	_displayThree = ''
+	"-Weapons-\n"
+	foreach invWeapon; _weapon {
+		if ARRAYSIZE(invWeapon) == 1; _display += "%*\__q[OnInfo,weapon,%(_weapon)]%(_weapon[0])\__q"
+		else; _display += "%*\__q[OnInfo,weapon,%(_weapon)]%(_weapon[0])\__q %*\__q[OnRemoveWeapon,%(_weapon)](drop Weapon)\__q"
+		_display += "\n"
+	}
+	_display
+	"\n\n[half]-Potions-\n"
+	foreach invPotions; _potion {
+		_displayTwo += "%*\__q[OnInfo,potion,%(_potion)]%(_potion[0])\__q %*\__q[OnConsumePotion,%(_potion)](use Potion)\__q\n"
+	}
+	_displayTwo
+	"\n\n[half]-Magic-\n"
+	foreach slimeMagic; _magic {
+		_displayThree += "%*\__q[OnInfo,magic,%(_magic)]%(_magic[0])\__q\n"
+	}
+	_displayThree
+	"\n\n\n[half]%*\__q[OnSakuraMenu]Return To Pause Menu\__q\n%*\__q[пустой]Back To Dungeon\__q"
+	"\n\nClass: %(slimeClass[0])\nWeapon: %(slimeWeapon[0])"
+	"\nHP: %(slimeClass[1]) MP: %(slimeClass[2])"
+	"\nLevel: %(slimeLevel)\nEXP: %(slimeExp)/100"
+	"\_q"
+}
+
+OnRemoveWeapon : all {
+	_slimeCheck = "%(reference0),%(reference1),%(reference2)"
+	if slimeWeapon == _slimeCheck; slimeWeapon = IARRAY
+	_num = ASEARCH(_slimeCheck,invWeapon)
+	invWeapon[_num] = IARRAY
+	"\_q"
+	"%(reference0) removed from Inventory.\_q\x\![raise,OnInventory]"
+}
+
+OnConsumePotion : all {
+	_classnum = 0
+	_effectNumber = TOINT(reference1)
+	foreach charClass; _numFind {
+		if slimeClass[0] == _numFind[0] {
+			_classnum = ASEARCH(_numFind,charClass)
+			break
+		}
+	}
+	"\_q"
+	_slime = TOINT(slimeClass[1])
+	_char = TOINT(charClass[_classnum][1]) + TOINT(arrayLevel[0])
+	_slimeMagic = TOINT(slimeClass[2])
+	_charMagic = TOINT(charClass[_classnum][2]) + TOINT(arrayLevel[1])
+	case reference2 {
+		when "heal" {
+			if (_effectNumber + _slime >= _char); slimeClass[1] = _char
+			else; slimeClass[1] = (TOINT(slimeClass[1]) + _effectNumber)
+			"%(slimeClass[0]) regained %(_effectNumber) Health Points. (Now %(slimeClass[1]))"
+		}
+		when "healMagic" {
+			if (_effectNumber + _slimeMagic >= _charMagic); slimeClass[2] = _charMagic
+			else; slimeClass[2] = (TOINT(slimeClass[2]) + _effectNumber)
+			"%(slimeClass[0]) regained %(_effectNumber) Magic Points. (Now %(slimeClass[2]))"
+		}
+		_potion = "%(reference0),%(reference1),%(reference2),%(reference3)"
+		_remove = ASEARCH(_potion,invPotions)
+		invPotions[_remove] = IARRAY
+	}
+	/*"\n%(_slime) and %(_char)\n"
+	"%(_slimeMagic) and %(_charMagic)\n"
+	"%(_classnum)\n"*/
+	"\n\nPotion Absorbed.\x\![raise,OnInventory]\_q"
+}
+
+OnEncounterInfo : all {
+	"\b[2]\_q\![set,autoscroll,disable]\*"
+	_display = ''
+	foreach encounters; _encounters {
+		_display += "%*\__q[OnInfo,encounter,%(_encounters)]%(_encounters[0])\__q\n"
+	}
+	_display
+	"\n\n[half]%*\__q[OnSakuraMenu]Return To Pause Menu\__q\n%*\__q[пустой]Back To Dungeon\__q"
+	"\n\nClass: %(slimeClass[0])\nWeapon: %(slimeWeapon[0])"
+	"\nHP: %(slimeClass[1]) MP: %(slimeClass[2])"
+	"\nLevel: %(slimeLevel)\nEXP: %(slimeExp)/100"
+	"\_q"
+}
+
+OnInfo : all {
+	"\b[2]\_q\![set,autoscroll,disable]\*"
+	//"\f[color,disable]%(reference)\f[default]\n\n"
+	case reference0 {
+		when "encounter" {
+			//name,health,magicPoints,maxDamage,minDamage,exp,description,interval
+			"\0\s[0]\i[%(reference8)]%(reference1):\n\n[half]"
+			"Health: %(reference2)\n"
+			if reference3 != 0; "Magic: %(reference3)\n"
+			"Damage: %(reference5)-%(reference4)\n"
+			"Information:\n%(reference7)"
+		}
+		when "weapon" {
+			"%(reference1)\n\n[half]"
+			"Damage: %(reference2)\n\n[half]"
+			"Information:\n%(reference3)"
+		}
+		when "potion" {
+			"%(reference1)\n\n[half]"
+			"Effect: %(reference3)\n"
+			"Amount: %(reference2) Points\n\n[half]"
+			"Information:\n%(reference4)"
+		}
+		when "magic" {
+			//name,cost,damage,description
+			"%(reference1):\n\n[half]"
+			"Casting Cost: %(reference2)\n"
+			"Damage: %(reference3)\n\n[half]"
+			"Information: %(reference4)"
+		}
+		others {"%(reference)"}
+	}
+	case reference0 {
+		when "encounter" {
+			"\n\n%*\__q[OnEncounterInfo]Return To Enemy Information\__q"
+		}
+		others {
+			"\n\n%*\__q[OnInventory]Return To Inventory\__q"
+		}
+	}
+	"\n%*\__q[Onпустой]Back To Dungeon\__q\_q"
+}

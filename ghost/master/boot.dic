@@ -1,0 +1,57 @@
+OnFirstBoot
+{
+	slimeClass = IARRAY
+	slimeWeapon = IARRAY
+	slimeLevel = 0
+	invWeapon = IARRAY
+	invPotions = IARRAY
+	encounterRun = 0
+	magic = 0
+	encounterRate = 3
+	encounterMinute = 0
+	turn = 0
+	slimeExp = 0
+	arrayLevel = (0,0)
+	
+	"\1\s[-1]\0\s[0](You are but a humble slime, stuck in this dungeon. Perhaps you will never get out, but you can at least stop Inn Keeper Tomato *Tomate* Soups from showing up for the next humble slime... right?)\x\![raise,OnChangeClass]"
+}
+
+OnInitialize
+{
+	//Для новые переменние в обновление, лучше пишите вот так:
+	//if !ISVAR("НоваяПеременная"); НоваяПеремення = 0
+	if reference0 != "reload" //Для вещи, которые хочешь сбросить ТОЛЬКО если не просто перезагрузишь. Что-то для тебя, разработчик, в основном.
+	{
+		/*slimeClass = IARRAY
+		slimeWeapon = IARRAY
+		slimeLevel = 0
+		invWeapon = IARRAY
+		invPotions = IARRAY
+		encounterRun = 0
+		magic = 0
+		encounterRate = 3
+		encounterMinute = 0
+		turn = 0
+		slimeExp = 0
+		arrayLevel = (0,0)*/
+	}
+}
+
+OnBoot
+{
+	"\1\s[-1]\0\s[0](Another day, another corridor.)"
+	--
+	"\x\e"
+}
+
+OnClose
+{
+	if encounterRun {
+		encounterRun = 0
+		turn = 0
+		"\0\s[0](Game Forfeit.)"
+	}
+	"\0\s[0](That's enough of that for now.)"
+	--
+	"\x\-"
+}

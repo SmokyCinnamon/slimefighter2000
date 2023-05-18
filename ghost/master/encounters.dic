@@ -1,0 +1,327 @@
+OnEncounterRate : all {
+	"\_q\b2\n[half]\![set,autoscroll,disable]\*"
+	"Encounter Rate is set to %(encounterRate)\n\n"
+	"%*\__q[OnChangeEncounterRate,1]1 minute\__q\n"
+	"%*\__q[OnChangeEncounterRate,2]2 minutes\__q\n"
+	"%*\__q[OnChangeEncounterRate,3]3 minutes\__q\n"
+	"%*\__q[OnChangeEncounterRate,5]5 minutes\__q\n"
+	"%*\__q[OnChangeEncounterRate,10]10 minutes\__q\n"
+	"%*\__q[OnChangeEncounterRate,15]15 minutes\__q\n"
+	"%*\__q[OnChangeEncounterRate,20]20 minutes\__q\n"
+	"%*\__q[OnChangeEncounterRate,25]25 minutes\__q\n"
+	"%*\__q[OnChangeEncounterRate,30]30 minutes\__q\n"
+	"\n%*\__q[OnChangeEncounterRate,0]No Encounters\__q\n"
+	"\n\n[half]%*\__q[OnSakuraMenu]Return To Pause Menu\__q\n%*\__q[пустой]Back To Dungeon\__q"
+}
+
+OnChangeEncounterRate {
+	encounterRate = reference0
+	encounterMinute = 0
+	OnEncounterRate
+}
+
+OnBalloonTimeout {
+	if encounterRun; "Game Paused. Return from the Pause Menu.\x\![raise,OnSakuraMenu]"
+}
+
+OnMinuteChange {
+	if (encounterRun != 1 && encounterRate != 0 || encounterRun != 1) && slimeClass[1] >= 1; encounterMinute++
+	if encounterMinute >= encounterRate && slimeClass[1] >= 1 {
+		encounterMinute = 0
+		enemy = IARRAY
+		"\_qEncounter!\_q\x\![raise,OnEncounter]"
+	}
+}
+
+OnEncounter : all {
+	encounterRun = 1
+
+	options = IARRAY
+	if slimeClass[2]; options = (1,1,1)
+	else; options = (1,0,1)
+	if reference0 == "pause"; "Game Un-Paused! \n\n\n\n[half](Turn:%(turn = turn - 1))\x"
+	//"\_q\f[color,disable]%(turn)\n%(enemy)\n%(slimeClass)\f[default]\_q\x"
+	//name,health,magicPoints,maxDamage,minDamage,exp,description,interval - enemy
+	if turn == 0 {
+		enemy = IARRAY
+		_enemyName = ANY(encounters)
+		_num = ASEARCH(_enemyName,encounters)
+		enemy = (encounters[_num][0],TOINT(encounters[_num][1]),TOINT(encounters[_num][2]),encounters[_num][3],encounters[_num][4],encounters[_num][5],encounters[_num][6],encounters[_num][7])
+		"\0\s[0]%(enemy[0]) is approaching!\i[%(enemy[7])]\x"
+		"\![raise,OnSlimeTurn]"
+	}
+	elseif enemy[1] <= 0 {
+		enemy[7] = IARRAY
+		"\0\s[0]%(enemy[0]) has been defeated!\x"
+		"\![raise,OnEncounterEnd,enemy]"
+	}
+	elseif slimeClass[1] <= 0 {
+		"%(slimeClass[0]) has been defeated by %(enemy[0])!\x"
+		"\![raise,OnEncounterEnd,slime]"
+	}
+	elseif turn % 2 == 0 {
+		LOGGING("tunr % 2\x")
+		"\![raise,OnSlimeTurn]"
+		
+	}
+	elseif turn % 2 == 1 {
+		LOGGING("turn is 1\x")
+		"\![raise,OnEnemyTurn]"
+	}
+	turn++
+}
+
+enemyInfo {
+	"%(enemy[0]):\n%(enemy[1]) HP\n%(enemy[2])MP"
+}
+slimeInfo {
+	"%(slimeClass[0]):\n%(slimeClass[1]) HP\n%(slimeClass[2]) MP"
+}
+
+OnSlimeTurn : all {
+	_display = ''
+	_displayTwo = ''
+	if options[0] == 0 && options[1] == 0 && options[2] == 0; OnEncounter
+	"\_q\b2\![set,autoscroll,disable]\*"
+	"%(enemyInfo)\n\n"
+	case reference0 {
+		when "slimeAttack" {
+			enemy[1] = TOINT(enemy[1])
+			_damage = TOINT(slimeWeapon[1])
+			if RAND(101) <= 15 {
+				_damage = _damage + (RAND(_damage) + 1) * 2
+				//damage equals weapon's damage + random number in weapons damage times 2.
+				"Critical hit! "
+			}
+			enemy[1] -= _damage
+			//enemy health minus equipped weapon's damage
+			"%(enemy[0]) took %(_damage) Points of Damage! (Now %(enemy[1]))"
+			options[0] = 0 //remove the option to attack with your weapon.
+			"\n\n%(slimeInfo)"
+			if enemy[1] <= 0; "\x\![raise,OnEncounter]"
+			else; "\x\![raise,OnSlimeTurn]"
+		}
+		when "slimeMagic" {
+			_damage = TOINT(reference3) //damage is spell damage. ference 3 because........ some kind of weirdness
+			_cost = TOINT(reference2) //magic cost
+			
+			if slimeClass[2] >= _cost {
+				enemy[1] -= _damage //enemy health minus spell damage
+				slimeClass[2] -= _cost //magic cost deducted from slime magic points
+				"%(enemy[0]) took %(_damage) Points of Damage! (Now %(enemy[1]))"
+				options[1] = 0 //remove the option to cast magic.
+				"\n\n%(slimeInfo)"
+				if enemy[1] <= 0; "\x\![raise,OnEncounter]"
+				else; "\x\![raise,OnSlimeTurn]"
+			}
+			else {
+				"Unable to cast %(reference1) - too little MP. (%(slimeClass[2]))"
+			}
+			"\n\n%(slimeInfo)"
+			"\x\![raise,OnSlimeTurn]"
+		}
+		when "slimePotion" {
+			_effectNumber = TOINT(reference2)
+			_classnum = 0
+			foreach charClass; _numfind {
+				if slimeClass[0] == _numfind[0] {
+					_classnum = ASEARCH(_numfind,charClass)
+					break
+				}
+			}
+			"%(_classnum)\n"
+			_slime = TOINT(slimeClass[1])
+			_char = TOINT(charClass[_classnum][1]) + TOINT(arrayLevel[0])
+			_slimeMagic = TOINT(slimeClass[2])
+			_charMagic = TOINT(charClass[_classnum][2]) + TOINT(arrayLevel[1])
+			case reference3 {
+				when "heal" {
+					if (_effectNumber + _slime >= _char); slimeClass[1] = _char
+					else; slimeClass[1] = (TOINT(slimeClass[1]) + _effectNumber)
+					"%(slimeClass[0]) regained %(_effectNumber) Health Points!"
+				}
+				when "healMagic" {
+					if (_effectNumber + _slimeMagic >= _charMagic); slimeClass[2] = _charMagic
+					else; slimeClass[2] = (TOINT(slimeClass[2]) + _effectNumber)
+					"%(slimeClass[0]) regained %(_effectNumber) Magic Points!"
+				}
+				options[2] = 0 //remove option to use potions
+				_potion = "%(reference1),%(reference2),%(reference3),%(reference4)"
+				_remove = ASEARCH(_potion,invPotions)
+				invPotions[_remove] = IARRAY
+				"\n\n%(slimeInfo)"
+				"\x\![raise,OnSlimeTurn]"
+			}
+		}
+		when "view" {
+			if reference1 == "slimeMagic" {
+				foreach slimeMagic; _magic {
+					if TOINT(slimeClass[2]) < TOINT(_magic[1]); "%*\f[color,disable]%(_magic[0]) (%(_magic[2]) | -%(_magic[1]))\f[default]\n"
+					else; _display += "%*\__q[OnSlimeTurn,slimeMagic,%(_magic)]%(_magic[0]) (%(_magic[2]) | -%(_magic[1]))\__q\n"
+				}
+				_display
+			}
+			elseif reference1 == "slimeInventory" {
+				"-Weapons-\n"
+				foreach invWeapon; _weapon {
+					if _weapon == slimeWeapon; "%*\f[color,disable]%*\__q[OnChangeWeapon,%(_weapon)]%(_weapon[0]) (equipped)\__q\f[default]\n"
+					else; _display += "%*\__q[OnChangeWeapon,%(_weapon)]%(_weapon[0])\__q\n"
+				}
+				_display
+				"-Potions-\n"
+				foreach invPotions; _potion {
+					if options[2]; _displayTwo += "%*\__q[OnSlimeTurn,slimePotion,%(_potion)]%(_potion[0])\__q\n"
+					else; "%*\f[color,disable]%(_potion[0])\f[default]\n"
+				}
+				_displayTwo
+			}
+			"\n\n[half]%*\__q[OnSlimeTurn]Return to Action Menu\__q"
+		}
+		others {
+			"What will you do?\n"
+			if options[0]; "%*\__q[OnSlimeTurn,slimeAttack]Attack\__q\n"
+			else; "%*\f[color,disable]Attack\f[default]\n"
+			if options[1]; "%*\__q[OnSlimeTurn,view,slimeMagic]Magic\__q\n"
+			else; "%*\f[color,disable]Magic\f[default]\n"
+			"%*\__q[OnSlimeTurn,view,slimeInventory]Inventory\__q\n"
+			if options[0] || options[1] || options[2]; "%*\__q[OnEncounter]Finish Turn\__q"
+		}
+	}
+	"\n\n%(slimeInfo)"
+	"\_q"
+}
+
+
+OnEnemyTurn : all {
+	"\_q\b2\![set,autoscroll,disable]"
+	"%(enemyInfo)\n\n\n"
+	//"%(enemy[0]) has done jack shit!\x"
+	//name,health,magicPoints,maxDamage,minDamage,exp,description,interval
+	_potionUsed = 0
+	foreach encounters; _numFind {
+		if enemy[0] == _numfind[0] {
+			_enemyNum = ASEARCH(_numfind,encounters)
+			break
+		}
+	}
+	if enemy[2] < encounters[_enemyNum][2] && RAND(100) + 1 >= 25 && _potionUsed == 0 {
+		//mp
+		_effectNumber = TOINT(encounterPotions[1][1])
+		_enemy = TOINT(enemy[2])
+		_encounters = TOINT(encounters[_enemyNum][2])
+		
+		if (_effectNumber + _enemy >= _encounters); enemy[2] = _encounters
+		else; enemy[2] = (TOINT(enemy[2]) + _effectNumber)
+		"%(enemy[0]) used %(encounterPotions[1][0]) and regained %(_effectNumber) Magic Points!"
+		"\n\n[half]"
+	}
+	if enemy[1] < encounters[_enemyNum][1] && RAND(100) + 1 >= 25 && _potionUsed == 0 {
+		//hp
+		_effectNumber = TOINT(encounterPotions[0][1])
+		_enemy = TOINT(enemy[1])
+		_encounters = TOINT(encounters[_enemyNum][1])
+		
+		if (_effectNumber + _enemy >= _encounters); enemy[1] = _encounters
+		else; enemy[1] = (TOINT(enemy[1]) + _effectNumber)
+		"%(enemy[0]) used %(encounterPotions[0][0]) and regained %(_effectNumber) Health Points!"
+		"\n\n[half]"
+	}
+	if enemy[2] && RAND(100) + 1 >= 50 {
+		_cast = IARRAY
+		_cast = ANY(encounterMagic)
+		_damage = TOINT(_cast[2]) //damage is spell damage.
+		_cost = TOINT(_cast[1]) //magic cost
+		LOGGING("spell %(_cast)\ncost %(_cost)\ndamage %(damage)\n\n")
+		if enemy[2] >= _cost {
+			slimeClass[1] -= _damage //enemy health minus spell damage
+			enemy[2] -= _cost //magic cost deducted from slime magic points
+			"%(enemy[0]) casts %(_cast[0])!\n"
+			"%(slimeClass[0]) took %(_damage) Points of Damage!"
+			if slimeClass[1] <= 0; "\n\n%(slimeInfo)\x\![raise,OnEncounter]"
+		}
+		else {
+			LOGGING("%(enemy[0]) was unable to cast %(_cast[0]) - too little MP. (%(enemy[2]))")
+		}
+		"\n\n[half]"
+	}
+	if enemy[1] {
+		OnGetDamage
+		_damage = damageTemp
+		"%(enemy[0]) attacks!\n"
+			if RAND(101) <= 5 {
+				_damage = _damage + (RAND(_damage) + 1) * 2
+				//damage equals weapon's damage + random number in weapons damage times 2.
+				"Critical hit! "
+			}
+			slimeClass[1] -= _damage
+			//enemy health minus equipped weapon's damage
+			"%(slimeClass[0]) took %(_damage) Points of Damage!\n"
+	}
+	ERASEVAR(damageTemp)
+	"\n\n%(slimeInfo)\x\![raise,OnEncounter]"
+	"\_q"
+}
+
+OnGetDamage {
+	_damage = RAND(enemy[3]) + 1
+	if _damage < TOINT(enemy[4]); OnGetDamage
+	else; damageTemp = _damage
+	
+}
+
+OnEncounterEnd : all {
+	turn = 0
+	_reward = IARRAY
+	"\_q\*"
+	if reference0 == "enemy" {
+		_exp = TOINT(enemy[5]) + RAND(6)
+		slimeExp += _exp
+		"You gained %(_exp) exp!\n"
+		if slimeExp > 100 {
+			slimeExp -= 100; slimeLevel++
+			
+			_classnum = 0
+			foreach charClass; _numFind {
+				if slimeClass[0] == _numFind[0] {
+					_classnum = ASEARCH(_numFind,charClass)
+					break
+				}
+			}
+	
+			arrayLevel[0] += RAND(6) + 1
+			if TOINT(charClass[_classnum][2]); arrayLevel[1] += RAND(6) + 1
+			
+			slimeClass[1] = TOINT(charClass[_classnum][1]) + TOINT(arrayLevel[0])
+			slimeClass[2] = TOINT(charClass[_classnum][2]) + TOINT(arrayLevel[1])
+			
+			
+			"You leveled up! %(slimeClass[0]) is now level %(slimeLevel).\n"
+			"Max HP is now %(slimeClass[1])!\n"
+			if slimeClass[2]; "Max MP is now %(slimeClass[2])!\n"
+		}
+		//reward checks
+		if RAND(100) + 1 <= 3 {
+			_reward = ANY(charWeapon)
+			invWeapon ,= _reward
+		}
+		elseif ARRAYSIZE(invPotions) >= 6 {}
+		else {
+			_reward = ANY(charPotion)
+			invPotions ,= _reward
+		}
+		if _reward; "You gained %(_reward[0]) for your Hard Work!"
+	}
+	else {
+		slimeClass[1] = 0 //to make sure you can at least use a potion
+		if ARRAYSIZE(invPotions) >= 6 {}
+		else {
+			invPotions ,= charPotion[2]
+			invPotions ,= charPotion[3]
+			//to make sure you have potions.............
+		}
+		"\0\s[0]%(slimeClass[0]) has dieded.\n"
+	}
+	LOGGING("\n%(arrayLevel)")
+	"\n\n%*\q[Back To Dungeon, пустой]"
+	encounterRun = 0
+}

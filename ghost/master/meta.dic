@@ -1,4 +1,27 @@
-//в этот файл некоторые функции, которые сделают жизни легче, но они не необходимо! Если не нравятся они, просто удалить им. Если не хочешь настроить обновление по сети, можешь удалить или закомментировать ими, тоже. Если ни в чём не интересно, просто удалить этот ж файл
+slimeNoise {
+	if playSound {
+		"\![sound,play,wav/slime1.wav,--rate=150]"
+		"\![sound,play,wav/slime1.wav,--rate=175]"
+		"\![sound,play,wav/slime1.wav,--rate=160]"
+	}
+}
+enemyNoise {
+	if playSound {
+		case enemy[7] {
+			when "6" {
+				"\![sound,play,wav/guitar1.wav]"
+				"\![sound,play,wav/guitar2.wav]"
+				"\![sound,play,wav/guitar3.wav]"
+			}
+			when "21" {
+				"\![sound,play,wav/ball1.wav]"
+				"\![sound,play,wav/ball2.wav]"
+				"\![sound,play,wav/ball3.wav,--rate=110]"
+			}
+			others {"\![sound,play,wav/ball3.wav,--rate=250]"}
+		}
+	}
+}
 
 OnShioriLoopLimit {
 	20
@@ -144,7 +167,7 @@ OnWindowStateRestore
 
 On_homeurl
 {
-	""
+	"https://raw.githubusercontent.com/SmokyCinnamon/slimefighter2000/main/"
 }
 
 
@@ -169,7 +192,7 @@ On_sakura.recommendsites
 
 recommendsites_sakura : array
 {
-	//"название ссылка";	"https://link.example.com/link/to/whatever/here/"
+	"Tamriel Balloon";	"https://zichqec.github.io/s-the-skeleton/balloons#tamriel"
 }
 
 On_sakura.portalsites 

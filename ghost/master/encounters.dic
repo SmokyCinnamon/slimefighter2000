@@ -86,6 +86,7 @@ OnSlimeTurn : all {
 	"%(enemyInfo)\n\n"
 	case reference0 {
 		when "slimeAttack" {
+			"%(enemyNoise)"
 			enemy[1] = TOINT(enemy[1])
 			_damage = TOINT(slimeWeapon[1])
 			if RAND(101) <= 15 {
@@ -129,7 +130,7 @@ OnSlimeTurn : all {
 					break
 				}
 			}
-			"%(_classnum)\n"
+			"%(slimeNoise)"
 			_slime = TOINT(slimeClass[1])
 			_char = TOINT(charClass[_classnum][1]) + TOINT(arrayLevel[0])
 			_slimeMagic = TOINT(slimeClass[2])
@@ -204,7 +205,7 @@ OnEnemyTurn : all {
 			break
 		}
 	}
-	if enemy[2] < encounters[_enemyNum][2] && RAND(100) + 1 >= 25 && _potionUsed == 0 {
+	if enemy[2] < encounters[_enemyNum][2] && RAND(100) + 1 >= 18 && _potionUsed == 0 {
 		//mp
 		_effectNumber = TOINT(encounterPotions[1][1])
 		_enemy = TOINT(enemy[2])
@@ -215,7 +216,7 @@ OnEnemyTurn : all {
 		"%(enemy[0]) used %(encounterPotions[1][0]) and regained %(_effectNumber) Magic Points!"
 		"\n\n[half]"
 	}
-	if enemy[1] < encounters[_enemyNum][1] && RAND(100) + 1 >= 25 && _potionUsed == 0 {
+	if enemy[1] < encounters[_enemyNum][1] && RAND(100) + 1 >= 18 && _potionUsed == 0 {
 		//hp
 		_effectNumber = TOINT(encounterPotions[0][1])
 		_enemy = TOINT(enemy[1])
@@ -248,6 +249,7 @@ OnEnemyTurn : all {
 		OnGetDamage
 		_damage = damageTemp
 		"%(enemy[0]) attacks!\n"
+		"%(slimeNoise)"
 			if RAND(101) <= 5 {
 				_damage = _damage + (RAND(_damage) + 1) * 2
 				//damage equals weapon's damage + random number in weapons damage times 2.
@@ -273,6 +275,7 @@ OnEncounterEnd : all {
 	turn = 0
 	_reward = IARRAY
 	"\_q\*"
+	"%(slimeNoise)"
 	if reference0 == "enemy" {
 		_exp = TOINT(enemy[5]) + RAND(6)
 		slimeExp += _exp
@@ -300,7 +303,7 @@ OnEncounterEnd : all {
 			if slimeClass[2]; "Max MP is now %(slimeClass[2])!\n"
 		}
 		//reward checks
-		if RAND(100) + 1 <= 3 {
+		if RAND(100) + 1 <= 12 {
 			_reward = ANY(charWeapon)
 			invWeapon ,= _reward
 		}
@@ -316,7 +319,7 @@ OnEncounterEnd : all {
 		if ARRAYSIZE(invPotions) >= 6 {}
 		else {
 			invPotions ,= charPotion[2]
-			invPotions ,= charPotion[3]
+			invPotions ,= charPotion[4]
 			//to make sure you have potions.............
 		}
 		"\0\s[0]%(slimeClass[0]) has dieded.\n"

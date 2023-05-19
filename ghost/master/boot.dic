@@ -6,18 +6,21 @@ OnFirstBoot
 	invWeapon = IARRAY
 	invPotions = IARRAY
 	encounterRun = 0
-	magic = 0
 	encounterRate = 3
 	encounterMinute = 0
 	turn = 0
 	slimeExp = 0
 	arrayLevel = (0,0)
+	playSound = 0
 	
 	"\1\s[-1]\0\s[0](You are but a humble slime, stuck in this dungeon. Perhaps you will never get out, but you can at least stop Inn Keeper Tomato *Tomate* Soups from showing up for the next humble slime... right?)\x\![raise,OnChangeClass]"
 }
 
 OnInitialize
 {
+	encounterMinute = 0
+	turn = 0
+	encounterRun = 0
 	//Для новые переменние в обновление, лучше пишите вот так:
 	//if !ISVAR("НоваяПеременная"); НоваяПеремення = 0
 	if reference0 != "reload" //Для вещи, которые хочешь сбросить ТОЛЬКО если не просто перезагрузишь. Что-то для тебя, разработчик, в основном.
@@ -28,7 +31,6 @@ OnInitialize
 		invWeapon = IARRAY
 		invPotions = IARRAY
 		encounterRun = 0
-		magic = 0
 		encounterRate = 3
 		encounterMinute = 0
 		turn = 0

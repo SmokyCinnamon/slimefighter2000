@@ -15,7 +15,7 @@ OnSakuraMenu : all
 {
 	OnInteger
 	"\0\s[0]\b2\![set,autoscroll,disable]\_q\*"
-	"\n[half]"
+	""
 	if encounterRun != 1 {
 		"%*\__q[OnEncounterRate]Change Encounter Rate (%(encounterRate))\__q\n\n"
 		"%*\__q[OnChangeClass]Change Character Class\__q\n"
@@ -24,12 +24,21 @@ OnSakuraMenu : all
 	}
 	
 	"%*\__q[OnEncounterInfo]Enemy Information\__q\n"
+	switch playSound {
+		"%*\__q[OnToggleSound,1]Toggle SFX (%(playSound))\__q\n"
+		"%*\__q[OnToggleSound,0]Toggle SFX (%(playSound))\__q\n"
+	}
 	if encounterRun; "\n%*\__q[OnEncounter,pause]Exit Pause Menu\__q"
 	else; "\n%*\q[Back To Dungeon, пустой]"
 	"\n\nClass: %(slimeClass[0])\nWeapon: %(slimeWeapon[0])"
 	"\nHP: %(slimeClass[1]) MP: %(slimeClass[2])"
 	"\nLevel: %(slimeLevel)\nEXP: %(slimeExp)/100"
 	"\nNext Encounter: %(encounterMinute)/%(encounterRate)\_q"	
+}
+
+OnToggleSound {
+	playSound = reference0
+	OnSakuraMenu
 }
 
 OnChangeClass : all {
@@ -72,7 +81,7 @@ OnChangeWeapon : all {
 	else {
 		_display = ''
 		foreach invWeapon; _weapon {
-			_display += "%*\__q[OnChangeWeapon,%(_weapon)]%(_weapon[0])\__q\n"
+			_display += "%*\__q[OnChangeWeapon,%(_weapon)]%(_weapon[0]) (%(_weapon[1]))\__q\n"
 		}
 		_display
 		"\n\n[half]%*\__q[OnSakuraMenu]Return To Pause Menu\__q\n%*\__q[пустой]Back To Dungeon\__q"
@@ -136,6 +145,7 @@ OnConsumePotion : all {
 		}
 	}
 	"\_q"
+	"%(slimeNoise)"
 	_slime = TOINT(slimeClass[1])
 	_char = TOINT(charClass[_classnum][1]) + TOINT(arrayLevel[0])
 	_slimeMagic = TOINT(slimeClass[2])

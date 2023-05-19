@@ -34,7 +34,7 @@ encounters : array {
 
 encounterMagic : array {
 	//name,cost,damage
-	"Static Shock,2,5"
+	"Static Shock,2,3"
 	"Freeze,4,9"
 	"Singular Lightning,9,12"
 	"Fuzzy Arc,15,20"
@@ -51,7 +51,7 @@ slimeMagic : array {
 	//name,cost,damage,description
 	case slimeClass[0] {
 		when "Humble Slime" {
-			"Static Shock,2,5,We're not sure how you even managed to generate static - being a slime and all."
+			"Static Shock,2,3,We're not sure how you even managed to generate static - being a slime and all."
 			"Freeze,4,9,Freeze your enemies right in their Tracks!\nReally though it just makes them cold."
 		}
 		when "Fuzzy Slime" {
@@ -90,6 +90,7 @@ charWeapon : array {
 	"Dog,20,Your eternal friendly Companion.\nAbsorbs things Weirdly - but you love it anyways."
 	"Spoon,3,Helps to break down Liquids for Absorbtion.\nNot really faster."
 	"Can Opener,7,If you throw it hard enough it can open a Can.\nIs that why it's a Can Opener?"
+	"Cold Water,2,It really only confuses enemies - but the glass Shattering does hurt."
 }
 
 charPotion : array {

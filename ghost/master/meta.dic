@@ -3,6 +3,7 @@ slimeNoise {
 		"\![sound,play,wav/slime1.wav,--rate=150]"
 		"\![sound,play,wav/slime1.wav,--rate=175]"
 		"\![sound,play,wav/slime1.wav,--rate=160]"
+		"\![sound,play,wav/slime1.wav]"
 	}
 }
 enemyNoise {

@@ -42,6 +42,14 @@ OnToggleSound {
 }
 
 OnChangeClass : all {
+	if reference0 == "first" {
+		invWeapon ,= charWeapon[0]
+		slimeWeapon = (charWeapon[0][0],charWeapon[0][1],charWeapon[0][2])
+		invPotions ,= charPotion[0]
+		invPotions ,= charPotion[0]
+		invPotions ,= charPotion[0]
+		invPotions ,= charPotion[1]
+	}
 	"\b[2]\_q\![set,autoscroll,disable]\*"
 	_display = ''
 	//"WARNING: This will RESET your progress! Only Proceed if you're certain you want to RESET your PROGRESS!\n\n\n[half]"

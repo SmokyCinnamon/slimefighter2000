@@ -13,7 +13,7 @@ OnFirstBoot
 	arrayLevel = (0,0)
 	playSound = 0
 	
-	"\1\s[-1]\0\s[0](You are but a humble slime, stuck in this dungeon. Perhaps you will never get out, but you can at least stop Inn Keeper Tomato *Tomate* Soups from showing up for the next humble slime... right?)\x\![raise,OnChangeClass]"
+	"\1\s[-1]\0\s[0](You are but a humble slime, stuck in this dungeon. Perhaps you will never get out, but you can at least stop Inn Keeper Tomato *Tomate* Soups from showing up for the next humble slime... right?)\x\![raise,OnChangeClass,first]"
 }
 
 OnInitialize

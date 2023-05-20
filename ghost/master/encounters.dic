@@ -43,10 +43,12 @@ OnEncounter : all {
 	//"\_q\f[color,disable]%(turn)\n%(enemy)\n%(slimeClass)\f[default]\_q\x"
 	//name,health,magicPoints,maxDamage,minDamage,exp,description,interval - enemy
 	if turn == 0 {
-		enemy = IARRAY
-		_enemyName = ANY(encounters)
-		_num = ASEARCH(_enemyName,encounters)
-		enemy = (encounters[_num][0],TOINT(encounters[_num][1]),TOINT(encounters[_num][2]),encounters[_num][3],encounters[_num][4],encounters[_num][5],encounters[_num][6],encounters[_num][7])
+		if reference0 != "pause" {
+			enemy = IARRAY
+			_enemyName = ANY(encounters)
+			_num = ASEARCH(_enemyName,encounters)
+			enemy = (encounters[_num][0],TOINT(encounters[_num][1]),TOINT(encounters[_num][2]),encounters[_num][3],encounters[_num][4],encounters[_num][5],encounters[_num][6],encounters[_num][7])
+		}
 		"\0\s[0]%(enemy[0]) is approaching!\i[%(enemy[7])]\x"
 		"\![raise,OnSlimeTurn]"
 	}
